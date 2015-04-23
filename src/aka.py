@@ -17,28 +17,34 @@ def simple_command(command_pieces):
 def splat_params_command(command_pieces, splat_text):
     return lambda args: ' '.join(command_pieces).replace(splat_text, ' '.join(args))
 
-def make_lookup(alias_object, current_path=[], current_command=[], result={}):
+def make_lookup(alias_object, current_path=[], current_command=[], result={ 'commands': {}, 'named_aliases': {} }):
     '''
     Given a raw alias object, make it easily searchable
     '''
 
     for alias in alias_object:
-        p = current_path + [alias['token']]
+        p = current_path + [alias.get('token', None)]
         c = current_command + [alias['command']]
+
         if 'splatParamsInto' in alias:
-            result[tuple(p)] = splat_params_command(c, alias['splatParamsInto'])
+            result['commands'][tuple(p)] = splat_params_command(c, alias['splatParamsInto'])
         else:
-            result[tuple(p)] = simple_command(c)
+            result['commands'][tuple(p)] = simple_command(c)
+
+        if 'name' in alias:
+            result['named_aliases'][alias['name']] = result['commands'][tuple(p)]
 
         make_lookup(alias.get('branches', []), p, c, result)
 
     return result
 
 def chopback_lookup(alias_dict, args):
-    for i in xrange(len(alias_dict), -1, -1):
+    commands = alias_dict['commands']
+    print alias_dict
+    for i in xrange(len(commands), -1, -1):
         seek = tuple(args[:i])
-        if seek in alias_dict:
-            return alias_dict[seek](args[i:])
+        if seek in commands:
+            return commands[seek](args[i:])
 
     return None
 
