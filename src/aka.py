@@ -17,6 +17,12 @@ def simple_command(command_pieces):
 def splat_params_command(command_pieces, splat_text):
     return lambda args: ' '.join(command_pieces).replace(splat_text, ' '.join(args))
 
+def build_command(alias, current_command):
+    if 'splatParamsInto' in alias:
+        return splat_params_command(current_command, alias['splatParamsInto'])
+    else:
+        return simple_command(current_command)
+
 def make_lookup(alias_object, current_path=[], current_command=[], result={ 'commands': {}, 'named_aliases': {} }):
     '''
     Given a raw alias object, make it easily searchable
@@ -26,10 +32,7 @@ def make_lookup(alias_object, current_path=[], current_command=[], result={ 'com
         p = current_path + [alias.get('token', None)]
         c = current_command + [alias['command']]
 
-        if 'splatParamsInto' in alias:
-            result['commands'][tuple(p)] = splat_params_command(c, alias['splatParamsInto'])
-        else:
-            result['commands'][tuple(p)] = simple_command(c)
+        result['commands'][tuple(p)] = build_command(alias, c)
 
         if 'name' in alias:
             result['named_aliases'][alias['name']] = result['commands'][tuple(p)]
