@@ -4,8 +4,8 @@
     "command": "git",
     "branches": [
       {
-        "name": "verbose commit"
-        "command": "commit -v",
+        "name": "verbose commit",
+        "command": "commit -v"
       }, {
         "token": "ac",
         "command": "add -A",
