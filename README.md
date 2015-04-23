@@ -6,7 +6,7 @@ A new kind of alias system for linux
 Ensure you have `python` installed, and run the install script
 ```
 . install.sh
-``` 
+```
 Warning: installing this software will install aliases for all combinations of the characters `a`, `s`, `d`, and `f`
 
 ## Configuring (by example)
@@ -99,22 +99,22 @@ you could do so with
 
 If you wanted the command
 ```
-for i in {1..N}; do cd ..; done
+find . -name "*.$EXT" -delete
 ```
-(where N is the first param passed to the alias)
+(where $EXT is the first param passed to the alias)
 
 to be aliased to
 ```
-afsd cd N
+afsd rm $EXT
 ```
 
 you could do so with
 ```
 [
   {
-    "token": "cd",
-    "command": "for i in {1..N}; do cd ..; done",
-    "params": ["N"]
+    "token": "rm",
+    "command": "find . -name \"*.$EXT\" -delete",
+    "params": ["$EXT"]
   }
 ]
 ```

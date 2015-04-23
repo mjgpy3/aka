@@ -17,12 +17,22 @@ def simple_command(command_pieces):
 def splat_params_command(command_pieces, splat_text):
     return lambda args, _: ' '.join(command_pieces).replace(splat_text, ' '.join(args))
 
+def named_params_command(command_pieces, params):
+    def replace_all(command, args):
+        for (param, arg) in zip(params, args):
+            command = command.replace(param, arg)
+        return command
+
+    return lambda args, _: replace_all(' '.join(command_pieces), args)
+
 def on_success_command(old_command, name):
     return lambda args, env: old_command(args, env) + ' && ' + env['named_aliases'][name](args, env)
 
 def build_command(alias, current_command):
-    if 'splatParamsInto' in alias:
-        command =  splat_params_command(current_command, alias['splatParamsInto'])
+    if 'params' in alias:
+        command = named_params_command(current_command, alias['params'])
+    elif 'splatParamsInto' in alias:
+        command = splat_params_command(current_command, alias['splatParamsInto'])
     else:
         command = simple_command(current_command)
 
