@@ -6,8 +6,7 @@ A new kind of alias system for linux
 Ensure you have `python` installed, and run the install script
 ```
 . install.sh
-```
-
+``` 
 Warning: installing this software will install aliases for all combinations of the characters `a`, `s`, `d`, and `f`
 
 ## Configuring (by example)
@@ -84,8 +83,8 @@ you could do so with
     "command": "git",
     "branches": [
       {
-        "name": "verbose commit"
-        "command": "commit -v",
+        "name": "verbose commit",
+        "command": "commit -v"
       }, {
         "token": "ac",
         "command": "add -A",
