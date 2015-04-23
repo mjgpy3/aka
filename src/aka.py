@@ -17,7 +17,7 @@ def make_lookup(alias_object, current_path=[], current_command=[], result={}):
     '''
 
     def simple_lookup(command_pieces):
-        return lambda _: ' '.join(command_pieces)
+        return lambda args: ' '.join(command_pieces + args)
 
     for alias in alias_object:
         p = current_path + [alias['token']]
@@ -29,19 +29,19 @@ def make_lookup(alias_object, current_path=[], current_command=[], result={}):
     return result
 
 def chopback_lookup(alias_dict, args):
-    i = len(args)
-
-    while i != 0:
+    for i in xrange(len(alias_dict), -1, -1):
         seek = tuple(args[:i])
         if seek in alias_dict:
             return alias_dict[seek](args[i:])
 
     return None
 
-lookup = make_lookup(raw_aliases())
+if __name__ == '__main__':
+    lookup = make_lookup(raw_aliases())
 
-try:
     command = chopback_lookup(lookup, sys.argv[1:])
-    os.system(command)
-except KeyError:
-    print 'Couldn\'t find alias for', (' '.join(sys.argv[1:]) or 'the absence of a pattern')
+
+    if command:
+        os.system(command)
+    else:
+        print 'Couldn\'t find alias for', (' '.join(sys.argv[1:]) or 'the absence of a pattern')
