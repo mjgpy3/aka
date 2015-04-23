@@ -11,18 +11,24 @@ def raw_aliases():
     with open(os.environ['AKA_ALIASES'], 'r') as f:
         return json.loads(f.read())
 
+def simple_command(command_pieces):
+    return lambda args: ' '.join(command_pieces + args)
+
+def splat_params_command(command_pieces, splat_text):
+    return lambda args: ' '.join(command_pieces).replace(splat_text, ' '.join(args))
+
 def make_lookup(alias_object, current_path=[], current_command=[], result={}):
     '''
     Given a raw alias object, make it easily searchable
     '''
 
-    def simple_lookup(command_pieces):
-        return lambda args: ' '.join(command_pieces + args)
-
     for alias in alias_object:
         p = current_path + [alias['token']]
         c = current_command + [alias['command']]
-        result[tuple(p)] = simple_lookup(c)
+        if 'splatParamsInto' in alias:
+            result[tuple(p)] = splat_params_command(c, alias['splatParamsInto'])
+        else:
+            result[tuple(p)] = simple_command(c)
 
         make_lookup(alias.get('branches', []), p, c, result)
 
