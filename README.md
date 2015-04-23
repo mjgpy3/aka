@@ -63,3 +63,35 @@ you could do so with
   }
 ]
 ```
+
+### Chaining
+
+If you wanted the command
+```
+git add -A && git commit -v
+```
+
+to be aliased to
+```
+afsd g ac
+```
+
+you could do so with
+```
+[
+  {
+    "token": "g",
+    "command": "git",
+    "branches": [
+      {
+        "name": "verbose commit"
+        "command": "commit -v",
+      }, {
+        "token": "ac",
+        "command": "add -A",
+        "onSuccessRun": "verbose commit"
+      }
+    ]
+  }
+]
+```

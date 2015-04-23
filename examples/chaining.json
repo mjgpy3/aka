@@ -1,0 +1,16 @@
+[
+  {
+    "token": "g",
+    "command": "git",
+    "branches": [
+      {
+        "name": "verbose commit"
+        "command": "commit -v",
+      }, {
+        "token": "ac",
+        "command": "add -A",
+        "onSuccessRun": "verbose commit"
+      }
+    ]
+  }
+]
