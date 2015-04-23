@@ -12,16 +12,24 @@ def raw_aliases():
         return json.loads(f.read())
 
 def simple_command(command_pieces):
-    return lambda args: ' '.join(command_pieces + args)
+    return lambda args, _: ' '.join(command_pieces + args)
 
 def splat_params_command(command_pieces, splat_text):
-    return lambda args: ' '.join(command_pieces).replace(splat_text, ' '.join(args))
+    return lambda args, _: ' '.join(command_pieces).replace(splat_text, ' '.join(args))
+
+def on_success_command(old_command, name):
+    return lambda args, env: old_command(args, env) + ' && ' + env['named_aliases'][name](args, env)
 
 def build_command(alias, current_command):
     if 'splatParamsInto' in alias:
-        return splat_params_command(current_command, alias['splatParamsInto'])
+        command =  splat_params_command(current_command, alias['splatParamsInto'])
     else:
-        return simple_command(current_command)
+        command = simple_command(current_command)
+
+    if 'onSuccessRun' in alias:
+        command = (lambda f: on_success_command(f, alias['onSuccessRun']))(command)
+
+    return command
 
 def make_lookup(alias_object, current_path=[], current_command=[], result={ 'commands': {}, 'named_aliases': {} }):
     '''
@@ -43,11 +51,10 @@ def make_lookup(alias_object, current_path=[], current_command=[], result={ 'com
 
 def chopback_lookup(alias_dict, args):
     commands = alias_dict['commands']
-    print alias_dict
     for i in xrange(len(commands), -1, -1):
         seek = tuple(args[:i])
         if seek in commands:
-            return commands[seek](args[i:])
+            return commands[seek](args[i:], alias_dict)
 
     return None
 
