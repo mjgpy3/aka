@@ -63,7 +63,7 @@ you could do so with
 ]
 ```
 
-### Chaining (TODO)
+### Chaining
 
 If you wanted the command
 ```
