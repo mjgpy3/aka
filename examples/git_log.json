@@ -1,0 +1,12 @@
+[
+  {
+    "token": "g",
+    "command": "git",
+    "branches": [
+      {
+        "token": "l",
+        "command": "log"
+      }
+    ]
+  }
+]
