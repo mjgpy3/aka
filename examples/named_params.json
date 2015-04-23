@@ -1,0 +1,7 @@
+[
+  {
+    "token": "cd",
+    "command": "for i in {1..N}; do cd ..; done",
+    "params": ["N"]
+  }
+]
