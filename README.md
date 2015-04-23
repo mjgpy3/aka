@@ -12,6 +12,8 @@ Warning: installing this software will install aliases for all combinations of t
 
 ## Configuring (by example)
 
+### Simple alias
+
 If you wanted the command
 ```
 git log
@@ -34,6 +36,30 @@ you could do so with
         "command": "log"
       }
     ]
+  }
+]
+```
+
+### Exploding params
+
+If you wanted the command
+```
+for i in PARAMS; do git push origin ":$i"; done
+```
+(where params is all parameters passed to the command)
+
+to be aliased to
+```
+afsd gitdr
+```
+
+you could do so with
+```
+[
+  {
+    "token": "gitdr",
+    "command": "for i in PARAMS_GO_HERE; do git push origin \":$i\"; done",
+    "splatParamsInto": "PARAMS_GO_HERE"
   }
 ]
 ```

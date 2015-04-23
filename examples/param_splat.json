@@ -1,0 +1,7 @@
+[
+  {
+    "token": "gitdr",
+    "command": "for i in PARAMS_GO_HERE; do git push origin \":$i\"; done",
+    "splatParamsInto": "PARAMS_GO_HERE"
+  }
+]

@@ -16,19 +16,32 @@ def make_lookup(alias_object, current_path=[], current_command=[], result={}):
     Given a raw alias object, make it easily searchable
     '''
 
+    def simple_lookup(command_pieces):
+        return lambda _: ' '.join(command_pieces)
+
     for alias in alias_object:
         p = current_path + [alias['token']]
         c = current_command + [alias['command']]
-        result[tuple(p)] = ' '.join(c)
+        result[tuple(p)] = simple_lookup(c)
 
         make_lookup(alias.get('branches', []), p, c, result)
 
     return result
 
+def chopback_lookup(alias_dict, args):
+    i = len(args)
+
+    while i != 0:
+        seek = tuple(args[:i])
+        if seek in alias_dict:
+            return alias_dict[seek](args[i:])
+
+    return None
 
 lookup = make_lookup(raw_aliases())
 
 try:
-    os.system(lookup[tuple(sys.argv[1:])])
+    command = chopback_lookup(lookup, sys.argv[1:])
+    os.system(command)
 except KeyError:
     print 'Couldn\'t find alias for', (' '.join(sys.argv[1:]) or 'the absence of a pattern')
