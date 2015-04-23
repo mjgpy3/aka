@@ -28,7 +28,7 @@ def make_lookup(alias_object, current_path=[], current_command=[], result={}):
 
 lookup = make_lookup(raw_aliases())
 
-print(lookup)
-print(sys.argv)[1:]
-
-os.system(lookup[tuple(sys.argv[1:])])
+try:
+    os.system(lookup[tuple(sys.argv[1:])])
+except KeyError:
+    print 'Couldn\'t find alias for', (' '.join(sys.argv[1:]) or 'the absence of a pattern')
